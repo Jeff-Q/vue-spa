@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import Home from './views/Home.vue'
+import Home from './components/Home'
 import Login from './views/login'
 import './assets/base.less'
 
+import './API/'
+
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [{
     path: '/',
     redirect: '/login'
@@ -14,20 +16,28 @@ export default new Router({
   {
     path: '/login',
     component: Login
+  },
+  {
+    path: '/home',
+    component: Home
   }
-
-    // {
-    //   path: '/',
-    //   name: 'home',
-    //   component: Home
-    // },
-    // {
-    //   path: '/about',
-    //   name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    // component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
-    // }
   ]
 })
+
+// 为路由对象添加beforeEach 导航守卫
+router.beforeEach((to, from, next) => {
+  // to 代表要访问的路径
+
+  // 1 登录不拦截
+  // 2 非登录 token 页面拦截
+  //   2.1 有token 放行
+  //   2.2 没有 token 强制跳转 到登录界面
+  if (to.path === '/login') return next()
+
+  const token = sessionStorage.getItem('token')
+  if (!token) return next('/login')
+
+  next()
+})
+
+export default router
