@@ -14,9 +14,9 @@
       <el-aside :width="width">
         <div class="toggle-button" @click='toggleCollapse' >|||</div>
         <!-- 侧边栏菜单区域 -->
-        <el-menu background-color="#333744" text-color="#fff" active-text-color="#409EFF" unique-opened :collapse-transition="false"   :collapse='isCollapse'  >
+        <el-menu router background-color="#333744"  text-color="#fff" active-text-color="#409EFF"  unique-opened :collapse-transition="false"  :collapse='isCollapse' :default-active='activePath' >
           <!-- 一级菜单 -->
-          <el-submenu :index="item.id + ''" v-for="item in menus" :key="item.id"  >
+          <el-submenu :index="''+item.path" v-for="item in menus" :key="item.id"  >
             <!-- 一级菜单的模板区域 -->
             <template slot="title">
               <!-- 图标 -->
@@ -26,7 +26,7 @@
             </template>
 
             <!-- 二级菜单 -->
-            <el-menu-item :index="'' + subItem.id" v-for="subItem in item.children" :key="subItem.id" >
+            <el-menu-item :index="'/'+subItem.path" v-for="subItem in item.children" :key="subItem.id" @click="saveNavState('/' + subItem.path)" >
               <template slot="title">
                 <!-- 图标 -->
                 <i class="el-icon-menu"></i>
@@ -50,6 +50,7 @@
 export default {
   data: () => ({
     isCollapse: false,
+    activePath: '',
     menus: [],
     iconsObj: {
       '125': 'iconfont icon-user',
@@ -66,6 +67,7 @@ export default {
   },
   created() {
     this.getMenus()
+    this.activePath = sessionStorage.getItem('activePath')
   },
   methods: {
     clear () {
@@ -74,12 +76,16 @@ export default {
     },
     async getMenus() {
       const { data: { data, meta } } = await this.$http.get('menus')
-      console.log(data)
+      // console.log(data)
       if (meta.status !== 200) return this.$message.error(meta.msg)
       this.menus = data
     },
     toggleCollapse() {
       this.isCollapse = !this.isCollapse
+    },
+    saveNavState(activePath) {
+      sessionStorage.setItem('activePath', activePath)
+        this.activePath = activePath
     }
   }
 }
