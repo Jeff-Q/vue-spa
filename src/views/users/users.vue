@@ -53,12 +53,12 @@
               size="mini"
               @click="removeEditDialog(scope.row.id)"
             ></el-button>
-            <el-tooltip effect="dark" placement="top" enterable="false" content="分配角色">
+            <el-tooltip effect="dark" placement="top" enterable content="分配角色">
               <el-button
                 type="warning"
                 icon="el-icon-setting"
                 size="mini"
-                @click="showEditDialog(scope.row)"
+                @click="setRole(scope.row)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -126,9 +126,35 @@
         <el-button type="primary" @click="editusers">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+  title="提示"
+  :visible.sync="setRoleDialogVisible"
+  width="50%"
+
+  >
+  <div>
+    <p>当前的用户:{{userInfo.username}}</p>
+    <p>当前的角色:{{userInfo.role_name}}</p>
+    <p>分配角色:
+      <el-select v-model="selectedRoleId" placeholder="请选择">
+    <el-option
+      v-for="item in roleslist"
+      :key="item.id"
+      :label="item.roleName"
+      :value="item.id">
+    </el-option>
+  </el-select>
+    </p>
+  </div>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="setRoleDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="setRoleInfo">确 定</el-button>
+  </span>
+</el-dialog>
   </div>
 </template>
 <script>
+import { userInfo } from 'os';
 export default {
   data() {
     // 验证邮箱的规则
@@ -157,6 +183,10 @@ export default {
       addialog: false,
       // 修改信息
       editialog: false,
+      // 需要被分配角色的用户信息
+      userInfo: {},
+       // 控制分配角色对话框的显示与隐藏
+      setRoleDialogVisible: false,
       // 添加用户的表单数据
       addForm: {
         username: "",
@@ -164,6 +194,10 @@ export default {
         email: "",
         mobile: ""
       },
+      // 所有角色的所有数据
+      roleslist: [],
+      // 已选中的角色ID值
+      selectedRoleId: '',
       // 查询到的用户信息对象
       editForm: {},
       // 修改表单的验证规则对象
@@ -300,6 +334,33 @@ export default {
         // 隐藏卡片框
         this.editialog = false;
         this.getusers();
+    },
+    // 展示分配角色的对话框
+   async setRole(userInfo) {
+      this.userInfo = userInfo
+
+     const { data: { data, meta } } = await this.$http.get('roles')
+            if (meta.status !== 200) return this.$message.error('获取失败')
+            this.roleslist = data
+            console.log(this.roleslist);
+      this.setRoleDialogVisible = true
+    },
+    // 点击按钮，分配角色
+   async setRoleInfo() {
+      if (!this.selectedRoleId) return this.$message.error('请选择要分配的角色')
+         const { data: { meta } } = await this.$http.put(`users/${this.userInfo.id}/role`,
+         {
+           rid: this.selectedRoleId
+           })
+      if (meta.status !== 200) return this.$message.error('更新角色失败')
+      this.$message.success('更新角色成功')
+      this.getusers()
+      this.setRoleDialogVisible = false
+    },
+    // 监听分配角色对话框的关闭事件
+    setDialogClosed() {
+       this.selectedRoleId = ''
+       this.userInfo = {}
     }
   }
 };
