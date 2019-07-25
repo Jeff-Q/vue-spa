@@ -11,7 +11,7 @@
       <!-- 添加角色按钮区域 -->
        <el-row>
            <el-col>
-               <el-button type="primary">添加角色</el-button>
+               <el-button type="primary" @click="addbtn">添加角色</el-button>
            </el-col>
        </el-row>
        <!-- 角色列表区域 -->
@@ -65,6 +65,25 @@
     <el-button type="primary" @click="alltRights">确定</el-button>
   </span>
 </el-dialog>
+  <!-- 添加角色的对话框 -->
+  <el-dialog
+  title="添加角色"
+  :visible.sync="addDialogVisible"
+  width="50%"
+  >
+  <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px" class="demo-ruleForm">
+ <el-form-item label="角色名称" prop="roleName">
+    <el-input v-model="addForm.roleName"></el-input>
+  </el-form-item>
+  <el-form-item label="角色描述" prop="roleDesc">
+    <el-input v-model="addForm.roleDesc"></el-input>
+  </el-form-item>
+  </el-form>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="addDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="addDialog">确 定</el-button>
+  </span>
+</el-dialog>
   </div>
 </template>
 <script>
@@ -84,7 +103,24 @@ data() {
             // 默认选中的节点id
             defkeys: [],
             // 当前即将分配角色的ID
-            roleID: ''
+            roleID: '',
+            // 控制添加角色的对话框
+            addDialogVisible: false,
+            // 要添加的参数对象
+            addForm: {
+              roleName: '',
+              roleDesc: ''
+            },
+            // 表单验证
+            addFormRules: {
+                 roleName: [
+                     { required: true, message: '请输入角色名称', trigger: 'blur' }
+                 ],
+                 roleDesc: [
+                     { required: true, message: '请输入角色描述', trigger: 'blur' }
+
+                 ]
+            }
           }
         },
         created() {
@@ -146,7 +182,21 @@ data() {
                     // 刷新页面
                     this.getrolse()
                     this.showSetRightDialogVisible = false
+          },
+        addbtn() {
+            this.addDialogVisible = true
+          },
+          // 添加角色事件
+         async addDialog() {
+            console.log(this.addForm)
+              this.addDialogVisible = false
+  const { data: { meta } } = await this.$http.post('roles', this.addForm)
+            if (meta.status !== 201) return this.$message.error(meta.msg)
+              this.$message.success('添加成功')
+           this.$refs.addFormRef.resetFields()
+              this.getrolse()
           }
+
         }
 }
 

@@ -10,6 +10,8 @@ import Right from '../views/power/rights'
 import Roles from '../views/power/roles'
 import Cate from '../components/goods/Cate.vue'
 import Params from '../components/goods/Params.vue'
+import GoodsList from '../components/goods/List.vue'
+import AddIndex from '../components/goods/add/index.vue'
 Vue.use(Router)
 const router = new Router({
     routes: [{
@@ -47,6 +49,14 @@ const router = new Router({
                 {
                     path: '/params',
                     component: Params
+                },
+                {
+                    path: '/goods',
+                    component: GoodsList
+                },
+                {
+                    path: '/goods/add',
+                    component: AddIndex
                 }
             ]
         }

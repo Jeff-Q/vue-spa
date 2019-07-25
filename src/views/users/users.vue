@@ -154,7 +154,6 @@
   </div>
 </template>
 <script>
-import { userInfo } from 'os';
 export default {
   data() {
     // 验证邮箱的规则

@@ -27,7 +27,7 @@
           <el-tag size="mini" type="warning" v-else>三级</el-tag>
         </template>
         <!-- 操作模板 -->
-        <template slot="opt" slot-scope="scope">
+        <template slot="opt">
          <el-button type="primary" size="mini" icon="el-icon-edit">编辑</el-button>
          <el-button type="danger" size="mini" icon="el-icon-delete">删除</el-button>
         </template>
@@ -74,7 +74,6 @@
   </div>
 </template>
 <script>
-import { async } from 'q';
 export default {
     data() {
       return {

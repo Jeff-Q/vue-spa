@@ -233,7 +233,7 @@ this.$refs.editFormRef.resetFields()
  if (meta.status !== 200) return this.$message.error('获取失败')
           // 遍历把字符串分割成数组
            data.forEach(item => {
-         item.attr_vals = item.attr_vals ? item.attr_vals.split(' ') : []
+         item.attr_vals = item.attr_vals ? item.attr_vals.split(',') : []
               // 控制文本框显示与隐藏
               item.inputVisible = false
               // 文本框中输入的值
