@@ -30,3 +30,6 @@ body,
 .ql-editor {
   min-height: 300px;
 }
+.el-scrollbar__view {
+  height: 150px;
+}

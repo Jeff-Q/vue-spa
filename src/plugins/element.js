@@ -39,6 +39,10 @@ import {
     Upload
 } from 'element-ui'
 
+import Timeline from './timeline/index'
+
+import Timelineitem from './timeline-item/index.js'
+
 Vue.use(Button)
 Vue.use(Form)
 Vue.use(FormItem)
@@ -74,6 +78,8 @@ Vue.use(Step)
 Vue.use(CheckboxGroup)
 Vue.use(Checkbox)
 Vue.use(Upload)
+Vue.use(Timeline)
+Vue.use(Timelineitem)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
